@@ -149,17 +149,17 @@ class AddonOptionalPackages
         $nameSpace = trim(str_replace('/', '\\', $nameSpace), '\\');
         $ConfigProviderContent = file_get_contents(__DIR__ . '/resources/ConfigProvider.stub');
         $ConfigProviderContent = str_replace('%NAMESPACE%', $nameSpace, $ConfigProviderContent);
-        file_put_contents(__DIR__ . '/../ConfigProvider.php', $ConfigProviderContent);
+        file_put_contents(__DIR__ . '/../src/ConfigProvider.php', $ConfigProviderContent);
         //创建插件
         $AddonContent = file_get_contents(__DIR__ . '/resources/Addon.stub');
         $AddonContent = str_replace('%NAMESPACE%', $nameSpace, $AddonContent);
-        file_put_contents(__DIR__ . '/../Addon.php', $AddonContent);
+        file_put_contents(__DIR__ . '/../src/Addon.php', $AddonContent);
         //创建应用配置
         $configName = 'addon-'.str_replace('/', '-', $this->addonOption['name']);
         $AddonConfigContent = file_get_contents(__DIR__ . '/resources/AddonConfig.stub');
-        file_put_contents(__DIR__ . '/../Config/autoload/'.$configName.'.php', $AddonConfigContent);
-        //@unlink(__DIR__ . '/../.gitkeep');
-        $this->addonOption['autoload']['psr-4'][$nameSpace . '\\'] = '/';
+        file_put_contents(__DIR__ . '/../src/Config/autoload/'.$configName.'.php', $AddonConfigContent);
+        @unlink(__DIR__ . '/../src/.gitkeep');
+        $this->addonOption['autoload']['psr-4'][$nameSpace . '\\'] = 'src/';
         $this->addonOption['extra']['hyperf']['config'] = $nameSpace . '\\ConfigProvider';
     }
 
@@ -240,7 +240,7 @@ class AddonOptionalPackages
     {
         if ($this->config && !empty($directory = $this->config['directory'])) {
             foreach ($directory as $item) {
-                @mkdir(__DIR__ . '/../' . $item);
+                @mkdir(__DIR__ . '/../src/' . $item);
             }
         }
     }
@@ -553,5 +553,43 @@ class AddonOptionalPackages
             }
         }
         $this->recursiveAddonRemoveDirectory($this->projectRoot . 'vendor');
+
+        $this->copyDirectory($this->projectRoot,$this->projectRoot.'/src',true);
+    }
+
+    /**
+     * 复制目录
+     * @param string $source 源目录路径
+     * @param string $destination 目标目录路径
+     * @param bool $force 是否强制复制（覆盖已存在的文件）
+     * @return void
+     */
+    public function copyDirectory(string $source, string $destination, bool $force = false): void
+    {
+        if (is_dir($source)) {
+            if (!is_dir($destination)) {
+                mkdir($destination, 0775, true);
+            }
+
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::SELF_FIRST
+            );
+
+            foreach ($iterator as $item) {
+                if ($item->isDir()) {
+                    $newPath = $destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+                    if (!is_dir($newPath)) {
+                        mkdir($newPath, 0775, true);
+                    }
+                } else {
+                    $newPath = $destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
+                    if ($force || !file_exists($newPath)) {
+                        copy($item, $newPath);
+                        $this->io->write(sprintf('  - 复制中 <info>%s</info>', $newPath));
+                    }
+                }
+            }
+        }
     }
 }
