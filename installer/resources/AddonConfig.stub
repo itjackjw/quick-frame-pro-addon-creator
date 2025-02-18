@@ -1,0 +1,7 @@
+<?php
+$configPath = str_replace('Config/autoload', '', dirname(__FILE__));
+
+if (file_exists($configPath . 'info.php')) {
+    return require $configPath . 'info.php';
+}
+return [];

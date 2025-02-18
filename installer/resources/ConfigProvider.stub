@@ -1,0 +1,30 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of MoChat.
+ * @link     https://quickframe.cn
+ * @document https://wiki.quickframe.cn
+ * @contact  1092428238@qq.com
+ */
+namespace %NAMESPACE%;
+
+use Quickframe\Framework\Config\BaseConfigProvider;
+
+class ConfigProvider extends BaseConfigProvider
+{
+    /**
+     * 加载配置文件并且合并到系统的配置信息会被合并到
+     * Hyperf\Contract\ConfigInterface 对应的实现类去，
+     * 从而实现各个组件在 Hyperf 框架下使用时要进行的配置初始化
+     * @author QuickFrame
+     * @date 2023/2/8 14:12
+     * @link 1092428238@qq.com
+     * @return array
+     */
+    public function __invoke(): array
+    {
+        return $this->initConfigProvider(__DIR__ . '/Config/autoload');
+    }
+}
+

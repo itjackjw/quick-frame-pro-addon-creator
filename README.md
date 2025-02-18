@@ -1,2 +1,2 @@
-# quick-frame-pro-addon-creator
-用于QuickFrame创建插件和应用钩子
+# quick-frame-addon-creator
+用于创建QuickFrame系统插件

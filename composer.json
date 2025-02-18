@@ -1,0 +1,44 @@
+{
+    "name": "itjackjw/quick-frame-pro-addon-creator",
+    "description": "用于快速生成QuickFrame系统框架插件",
+    "type": "project",
+    "keywords": ["php","hyperf","QuickFrame","quick-frame-pro-addon-creator","itjackjw"],
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "江伟",
+            "email": "1092428238@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Installer\\": "installer/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "QuickFrameTest\\": "tests"
+        }
+    },
+    "require": {
+        "php": ">=8.0"
+    },
+    "require-dev": {
+        "composer/composer": "^2.0"
+    },
+    "prefer-stable": true,
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "pre-install-cmd": "Installer\\Script::install",
+        "pre-update-cmd": "Installer\\Script::install",
+        "post-install-cmd": "Installer\\Script::cleanInstall",
+        "post-create-project-cmd": "Installer\\Script::cleanInstall",
+        "test": "phpunit -c phpunit.xml --colors=always",
+        "analyse": "phpstan analyse --memory-limit 1024M -l 0 ./src",
+        "cs-fix": "php-cs-fixer fix $1"
+    }
+}
