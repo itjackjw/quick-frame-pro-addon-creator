@@ -554,7 +554,7 @@ class AddonOptionalPackages
         }
         $this->recursiveAddonRemoveDirectory($this->projectRoot . 'vendor');
 
-        $this->copyDirectory($this->projectRoot,$this->projectRoot.'/src',true);
+        $this->copyDirectory($this->projectRoot.'/src',$this->projectRoot,true);
     }
 
     /**
