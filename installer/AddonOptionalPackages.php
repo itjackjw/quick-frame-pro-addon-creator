@@ -159,7 +159,7 @@ class AddonOptionalPackages
         $AddonConfigContent = file_get_contents(__DIR__ . '/resources/AddonConfig.stub');
         file_put_contents(__DIR__ . '/../src/Config/autoload/'.$configName.'.php', $AddonConfigContent);
         @unlink(__DIR__ . '/../src/.gitkeep');
-        $this->addonOption['autoload']['psr-4'][$nameSpace . '\\'] = 'src/';
+        $this->addonOption['autoload']['psr-4'][$nameSpace . '\\'] = '/';
         $this->addonOption['extra']['hyperf']['config'] = $nameSpace . '\\ConfigProvider';
     }
 
@@ -555,6 +555,8 @@ class AddonOptionalPackages
         $this->recursiveAddonRemoveDirectory($this->projectRoot . 'vendor');
 
         $this->copyDirectory($this->projectRoot.'/src',$this->projectRoot,true);
+        unlink($this->projectRoot.'/src');
+
     }
 
     /**
